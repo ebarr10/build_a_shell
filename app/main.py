@@ -10,23 +10,30 @@ commands = {
 }
 
 
+def execution_check(command, print_version="type"):
+    # get PATH and split into paths by delimiter
+    path = os.getenv("PATH")
+    paths = path.split(os.pathsep)
+    execution_split = command.split(" ")
+    execution_command = execution_split[0]
+
+    # Test is executable
+    for dir in paths:
+        location = os.path.join(dir, execution_command)
+        if os.access(location, os.X_OK):
+            if print_version == "type":
+                print(f"{execution_command} is {location}")
+
+            return True
+    return False
+
+
 def command_type_check(command):
     if command in commands:
         print(f"{command} is a shell builtin")
     else:
-        # get PATH and split into paths by delimiter
-        path = os.getenv("PATH")
-        paths = path.split(os.pathsep)
-        found = False
-
-        # Test is executable
-        for dir in paths:
-            location = os.path.join(dir, command)
-            if os.access(location, os.X_OK):
-                print(f"{command} is {location}")
-                found = True
-                continue
-        if not found:
+        found_execution = execution_check(command)
+        if not found_execution:
             print(f"{command}: not found")
 
 
@@ -42,7 +49,9 @@ def main():
                     commands[command]()
                 break
         else:
-            print(f"{line}: command not found")
+            found_execution = execution_check(line, print_version="execution")
+            if not found_execution:
+                print(f"{line}: command not found")
 
 
 if __name__ == "__main__":
