@@ -24,15 +24,7 @@ def execution_check(command, print_version="type"):
             if print_version == "type":
                 print(f"{execution_command} is {location}")
             elif print_version == "execution":
-                print(
-                    f"Program was passed {len(execution_args) + 1} args (including program name)."
-                )
-                print(f"Arg #0 (program name): {execution_command}")
-                for i, arg in enumerate(execution_args):
-                    print(f"Arg #{i+1}: {arg}")
                 subprocess.run([execution_command] + execution_args)
-                print(f"Program Signature: {1}")
-
             return True
     return False
 
