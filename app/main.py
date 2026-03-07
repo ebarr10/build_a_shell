@@ -1,5 +1,6 @@
 import sys
 import os
+import subprocess
 
 commands_that_need_params = ["echo", "type"]
 
@@ -29,6 +30,7 @@ def execution_check(command, print_version="type"):
                 print(f"Arg #0 (program name): {execution_command}")
                 for i, arg in enumerate(execution_args):
                     print(f"Arg #{i+1}: {arg}")
+                subprocess.run([execution_command] + execution_args)
                 print(f"Program Signature: {1}")
 
             return True
