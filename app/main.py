@@ -23,7 +23,7 @@ def command_type_check(command):
             location = os.path.join(dir, command)
             if os.access(location, os.X_OK):
                 print(f"{command} is {location}\n")
-                break
+                continue
         else:
             print(f"{command}: not found\n")
 
