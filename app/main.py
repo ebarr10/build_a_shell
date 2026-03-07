@@ -14,8 +14,7 @@ def execution_check(command, print_version="type"):
     # get PATH and split into paths by delimiter
     path = os.getenv("PATH")
     paths = path.split(os.pathsep)
-    execution_split = command.split(" ")
-    execution_command = execution_split[0]
+    execution_command, *execution_args = command.split(" ")
 
     # Test is executable
     for dir in paths:
@@ -23,6 +22,14 @@ def execution_check(command, print_version="type"):
         if os.access(location, os.X_OK):
             if print_version == "type":
                 print(f"{execution_command} is {location}")
+            elif print_version == "execution":
+                print(
+                    f"Program was passed {len(execution_args) + 1} args (including program name)."
+                )
+                print(f"Arg #0 (program name): {execution_command}")
+                for i, arg in enumerate(execution_args):
+                    print(f"Arg #{i+1}: {arg}")
+                print(f"Program Signature: {1}")
 
             return True
     return False
