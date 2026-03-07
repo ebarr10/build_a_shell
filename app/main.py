@@ -17,14 +17,16 @@ def command_type_check(command):
         # get PATH and split into paths by delimiter
         path = os.getenv("PATH")
         paths = path.split(os.pathsep)
+        found = False
 
         # Test is executable
         for dir in paths:
             location = os.path.join(dir, command)
             if os.access(location, os.X_OK):
                 print(f"{command} is {location}\n")
+                found = True
                 continue
-        else:
+        if not found:
             print(f"{command}: not found\n")
 
 
