@@ -10,7 +10,7 @@ commands = {
     "type": lambda line: command_type_check(line[5:]),
     "pwd": lambda: print(os.getcwd()),
     "cd": lambda line: cd_command(line),
-    "cat": lambda line: execution_check(line, print_version="execution"),
+    "cat": lambda line: cat_command(line),
 }
 
 
@@ -20,6 +20,12 @@ def echo_command(line):
     else:
         split_line = line.split()
         print(" ".join(split_line))
+
+
+def cat_command(line):
+    line = line.split(" ")
+    for _file in line:
+        execution_check(f"cat {_file}", print_version="execution")
 
 
 def cd_command(line):
