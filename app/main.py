@@ -9,7 +9,16 @@ commands = {
     "echo": lambda line: print(f"{line[5:]}"),
     "type": lambda line: command_type_check(line[5:]),
     "pwd": lambda: print(os.getcwd()),
+    "cd": lambda line: cd_command(line),
 }
+
+
+def cd_command(line):
+    path = line[3:]
+    try:
+        os.chdir(path)
+    except FileNotFoundError:
+        print(f"cd: {path}: No such file or directory")
 
 
 def execution_check(command, print_version="type"):
