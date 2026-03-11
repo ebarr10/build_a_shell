@@ -17,7 +17,8 @@ def echo_command(line):
     if line.startswith("'") and line.endswith("'"):
         print(line.replace("'", ""))
     else:
-        print(line)
+        split_line = line.split(" ")
+        print(" ".join(split_line))
 
 
 def cd_command(line):
