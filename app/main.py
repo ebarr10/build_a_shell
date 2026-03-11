@@ -10,6 +10,7 @@ commands = {
     "type": lambda line: command_type_check(line[5:]),
     "pwd": lambda: print(os.getcwd()),
     "cd": lambda line: cd_command(line),
+    "cat": lambda line: execution_check(line, print_version="execution"),
 }
 
 
