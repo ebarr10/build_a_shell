@@ -16,7 +16,10 @@ commands = {
 def cd_command(line):
     path = line[3:]
     try:
-        os.chdir(path)
+        if path == "~":
+            os.chdir(os.path.expanduser("~"))
+        else:
+            os.chdir(path)
     except FileNotFoundError:
         print(f"cd: {path}: No such file or directory")
 
