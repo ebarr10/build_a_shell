@@ -6,7 +6,7 @@ commands_that_need_params = ["echo", "type", "cd"]
 
 commands = {
     "exit": lambda: sys.exit(0),
-    "echo": lambda line: print(f"{line[5:].replace('\"', '').replace('\'', '')}"),
+    "echo": lambda line: print(f"{line[5:].replace('\'', '')}"),
     "type": lambda line: command_type_check(line[5:]),
     "pwd": lambda: print(os.getcwd()),
     "cd": lambda line: cd_command(line),
