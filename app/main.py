@@ -40,6 +40,8 @@ def parse_command(command):
     if in_word:
         tokens.append("".join(current_token))
 
+    return tokens
+
 
 def main():
     while True:
@@ -51,6 +53,7 @@ def main():
             break
 
         tokens = parse_command(line)
+
         if not tokens:
             continue
 
