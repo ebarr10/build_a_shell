@@ -2,7 +2,7 @@ import sys
 import os
 import subprocess
 
-commands_that_need_params = ["echo", "type"]
+commands_that_need_params = ["echo", "type", "cd"]
 
 commands = {
     "exit": lambda: sys.exit(0),
