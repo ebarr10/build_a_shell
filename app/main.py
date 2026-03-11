@@ -1,86 +1,103 @@
-import sys
 import os
 import subprocess
 
-commands_that_need_params = ["echo", "type", "cd", "cat"]
-
-commands = {
-    "exit": lambda: sys.exit(0),
-    "echo": lambda line: echo_command(line[5:]),
-    "type": lambda line: command_type_check(line[5:]),
-    "pwd": lambda: print(os.getcwd()),
-    "cd": lambda line: cd_command(line),
-    "cat": lambda line: cat_command(line),
-}
+builtins = {"echo", "exit", "type", "pwd", "cd"}
 
 
-def echo_command(line):
-    if "'" in line:
-        print(line.replace("'", ""))
-    else:
-        split_line = line.split()
-        print(" ".join(split_line))
+def get_executable_path(command):
+    path_env = os.getenv("PATH")
+    paths = path_env.split(os.pathsep)
+
+    for path_dir in paths:
+        if not path_dir:
+            continue
+        full_path = os.path.join(path_dir, command)
+        if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
+            return full_path
+
+    return None
 
 
-def cat_command(line):
-    line = line.split(" ")
-    for _file in line:
-        execution_check(f"cat {_file}", print_version="execution")
+def parse_command(command):
+    tokens = []
+    in_single_quote = False
+    current_token = []
+    in_word = False
 
-
-def cd_command(line):
-    path = line[3:]
-    try:
-        if path == "~":
-            os.chdir(os.path.expanduser("~"))
+    for char in command:
+        if char == "'":
+            in_single_quote = not in_single_quote
+            in_word = True
+        elif char.isspace() and not in_single_quote:
+            if in_word:
+                tokens.append("".join(current_token))
+                current_token = []
+                in_word = False
         else:
-            os.chdir(path)
-    except FileNotFoundError:
-        print(f"cd: {path}: No such file or directory")
+            current_token.append(char)
+            in_word = True
 
-
-def execution_check(command, print_version="type"):
-    # get PATH and split into paths by delimiter
-    path = os.getenv("PATH")
-    paths = path.split(os.pathsep)
-    execution_command, *execution_args = command.split(" ")
-
-    # Test is executable
-    for dir in paths:
-        location = os.path.join(dir, execution_command)
-        if os.access(location, os.X_OK):
-            if print_version == "type":
-                print(f"{execution_command} is {location}")
-            elif print_version == "execution":
-                subprocess.run([execution_command] + execution_args)
-            return True
-    return False
-
-
-def command_type_check(command):
-    if command in commands:
-        print(f"{command} is a shell builtin")
-    else:
-        found_execution = execution_check(command)
-        if not found_execution:
-            print(f"{command}: not found")
+    if in_word:
+        tokens.append("".join(current_token))
 
 
 def main():
     while True:
         print("$ ", end="")
-        line = input()
-        for command in commands:
-            if line.startswith(command):
-                if command in commands_that_need_params:
-                    commands[command](line)
+        try:
+            line = input()
+        except EOFError:
+            print()
+            break
+
+        tokens = parse_command(line)
+        if not tokens:
+            continue
+
+        cmd_name = tokens[0]
+        args = tokens[1:]
+
+        if cmd_name == "exit":
+            break
+
+        elif cmd_name == "echo":
+            print(" ".join(args))
+
+        elif cmd_name == "type":
+            if not args:
+                continue
+            target_cmd = args[0]
+
+            if target_cmd in builtins:
+                print(f"{target_cmd} is a shell builtin")
+            else:
+                exec_path = get_executable_path(target_cmd)
+                if exec_path:
+                    print(f"{target_cmd} is {exec_path}")
                 else:
-                    commands[command]()
-                break
+                    print(f"{target_cmd}: not found")
+
+        elif cmd_name == "pwd":
+            print(os.getcwd())
+
+        elif cmd_name == "cd":
+            if not args:
+                continue
+            target_dir = args[0]
+
+            if target_dir == "~":
+                target_dir = os.path.expanduser("~")
+
+            try:
+                os.chdir(target_dir)
+            except FileNotFoundError:
+                print(f"cd: {target_dir}: No such file or directory")
         else:
-            found_execution = execution_check(line, print_version="execution")
-            if not found_execution:
-                print(f"{line}: command not found")
+            exec_path = get_executable_path(cmd_name)
+            if exec_path:
+                subprocess.run([exec_path] + args)
+            else:
+                print(f"{cmd_name}: command not found")
 
 
 if __name__ == "__main__":
