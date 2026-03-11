@@ -17,7 +17,7 @@ def echo_command(line):
     if line.startswith("'") and line.endswith("'"):
         print(line.replace("'", ""))
     else:
-        split_line = line.split(" ")
+        split_line = line.split()
         print(" ".join(split_line))
 
 
