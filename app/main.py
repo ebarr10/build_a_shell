@@ -14,7 +14,7 @@ commands = {
 
 
 def echo_command(line):
-    if line.contains("'"):
+    if "'" in line:
         print(line.replace("'", ""))
     else:
         split_line = line.split()
