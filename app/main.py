@@ -8,6 +8,7 @@ commands = {
     "exit": lambda: sys.exit(0),
     "echo": lambda line: print(f"{line[5:]}"),
     "type": lambda line: command_type_check(line[5:]),
+    "pwd": lambda: print(os.getcwd()),
 }
 
 
