@@ -6,11 +6,18 @@ commands_that_need_params = ["echo", "type", "cd"]
 
 commands = {
     "exit": lambda: sys.exit(0),
-    "echo": lambda line: print(f"{line[5:].replace('\'', '')}"),
+    "echo": lambda line: echo_command(line[5:]),
     "type": lambda line: command_type_check(line[5:]),
     "pwd": lambda: print(os.getcwd()),
     "cd": lambda line: cd_command(line),
 }
+
+
+def echo_command(line):
+    if line.startswith("'") and line.endswith("'"):
+        print(line.replace("'", ""))
+    else:
+        print(line)
 
 
 def cd_command(line):
