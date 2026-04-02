@@ -1,3 +1,9 @@
+# build_a_shell
+
+A project from the website: https://app.codecrafters.io/courses/shell/overview where I build a simple shell and then need to pass tests upon completing the assignment
+
+## Given ReadMe:
+
 [![progress-banner](https://backend.codecrafters.io/progress/shell/c1fc34f7-04db-4883-b89a-b5742b2dc6db)](https://app.codecrafters.io/users/ebarr10?r=2qF)
 
 This is a starting point for Python solutions to the
